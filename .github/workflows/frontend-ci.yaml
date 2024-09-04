@@ -4,12 +4,53 @@ on:
   pull_request:
       branches:
       - main
+env:
+  NODE_VERSION: '20.x'
+
 jobs:
   lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code ##first step is to checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ##second step is to setup Nodejs
+        uses: nvm use
+        with:
+          node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'         ##is this sufficient to Perform a cache action to restore cache before dependency install?
+          cache-dependency-path: starter/frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: starter/frontend
+        run: npm ci
+
+      - name: Run lint
+        run: cd starter/frontend && npm run lint
+
 
 
   test:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code ##first step is to checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js ##second step is to setup Nodejs
+        uses: nvm use
+        with:
+          node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'         ##is this sufficient to Perform a cache action to restore cache before dependency install?
+          cache-dependency-path: starter/frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: starter/frontend
+        run: npm ci
+    
+      - name: Test
+        run: cd starter/frontend && npm run test
 
   build: ##only runs if both lint and test job have succeeded. I need to build the application using docker
     runs-on: ubuntu-latest ##?????this is debatable. Putting it here as of Wed 04/09 to check if it's actually necessary
@@ -19,35 +60,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Node.js ##second step is to setup Nodejs
-        uses: actions/setup-node@v3
+        uses: nvm use
         with:
-          node-version: latest
+          node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'         ##is this sufficient to Perform a cache action to restore cache before dependency install?
+          cache-dependency-path: starter/frontend/package-lock.json
 
-
-        ##missing step on how to Perform a cache action to restore cache before dependency install
-
-      - name: Install dependencies ##fourth step is to install dependencies
-        run: npm ci
-
-      - name: Run tests ##fifth step is to run tests
-        run: npm test
-
-    
-
-# Example of custom environment variable use
-# env:
-#   MONTH_OF_YEAR: December
-#   CURRENT_YEAR: 2023
-
-# jobs:
-#   holiday_status_job:
-#     runs-on: ubuntu-latest
-#     env:
-#       Greeting: Hello
-#     steps:
-#   - name: "Provide total annual vacation days"
-#     if: ${{ env.CURRENT_YEAR == '2023' }}
-#     run: echo "$Greeting $Full_Name. As of $MONTH_OF_YEAR $CURRENT_YEAR you will have $Vacation_Days vacation days!"
-#     env:
-#       Full_Name: UdaCycle Employee
-#       Vacation_Days: 20
+      - name: Build and Run Docker Image
+        run: |
+          cd starter/frontend
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag=mp-frontend:latest .
+          docker run --name mp-frontend -p 3000:3000 -d mp-frontend
