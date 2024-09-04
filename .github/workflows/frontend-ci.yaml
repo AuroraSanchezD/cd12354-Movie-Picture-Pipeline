@@ -1,5 +1,6 @@
 name: Frontend CI
 on:
+  workflow_dispatch:
   pull_request:
       branches:
       - main
@@ -24,7 +25,7 @@ jobs:
 
 
         ##missing step on how to Perform a cache action to restore cache before dependency install
-        
+
       - name: Install dependencies ##fourth step is to install dependencies
         run: npm ci
 
@@ -32,3 +33,21 @@ jobs:
         run: npm test
 
     
+
+# Example of custom environment variable use
+# env:
+#   MONTH_OF_YEAR: December
+#   CURRENT_YEAR: 2023
+
+# jobs:
+#   holiday_status_job:
+#     runs-on: ubuntu-latest
+#     env:
+#       Greeting: Hello
+#     steps:
+#   - name: "Provide total annual vacation days"
+#     if: ${{ env.CURRENT_YEAR == '2023' }}
+#     run: echo "$Greeting $Full_Name. As of $MONTH_OF_YEAR $CURRENT_YEAR you will have $Vacation_Days vacation days!"
+#     env:
+#       Full_Name: UdaCycle Employee
+#       Vacation_Days: 20
