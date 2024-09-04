@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Node.js ##second step is to setup Nodejs
-        uses: nvm use
+        uses: actions/setup-node@v3
         with:
           node-version: ${{env.NODE_VERSION}}
           cache: 'npm'         ##is this sufficient to Perform a cache action to restore cache before dependency install?
@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Node.js ##second step is to setup Nodejs
-        uses: nvm use
+        uses: actions/setup-node@v3
         with:
           node-version: ${{env.NODE_VERSION}}
           cache: 'npm'         ##is this sufficient to Perform a cache action to restore cache before dependency install?
@@ -60,7 +60,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Node.js ##second step is to setup Nodejs
-        uses: nvm use
+        uses: actions/setup-node@v3
         with:
           node-version: ${{env.NODE_VERSION}}
           cache: 'npm'         ##is this sufficient to Perform a cache action to restore cache before dependency install?
