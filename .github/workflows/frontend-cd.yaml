@@ -1,0 +1,14 @@
+name: Frontend CD
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      -main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: Logging into ECR
+      uses: aws-actions/amazon-ecr-login
