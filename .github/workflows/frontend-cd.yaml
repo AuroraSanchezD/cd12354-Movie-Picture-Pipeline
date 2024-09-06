@@ -60,6 +60,6 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION}}
         
     - name: Logging into ECR
-      uses: aws-actions/amazon-ecr-login
+      uses: aws-actions/amazon-ecr-login@v2
 
     
