@@ -31,10 +31,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{env.NODE_VERSION}}
+          cache: 'npm'
+          cache-dependency-path: starter/frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: starter/frontend
+        run: npm ci
+    
+      - name: Run tests
+        run: cd starter/frontend && npm run test
 
   build:
     runs-on: ubuntu-latest
 
     steps: 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+        aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID}}
+        aws-region: ${{ secrets.AWS_REGION}}
+        
     - name: Logging into ECR
       uses: aws-actions/amazon-ecr-login
+
+    
